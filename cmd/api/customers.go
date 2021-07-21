@@ -36,6 +36,8 @@ func (app *application) createCustomerHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	cust[nextCustId] = customer
+
+	w.WriteHeader(http.StatusCreated)
 }
 
 // Get customer details for a given ID
