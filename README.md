@@ -7,6 +7,11 @@ This is a sample REST API implementation to manage customer details.
 
 The REST API to the example app is described below.
 
+# Setup
+
+Create a MYSQL database and execute `dbscripts/mysql.sql`
+Create a .envrc file in $PROJECT_HOME directory and configure 'CUSTOMER_API_DB_DSN' with database details 
+	`export CUSTOMER_API_DB_DSN=root:root@tcp(127.0.0.1:3306)/go_customer`
 
 ## Create a new Customer
 
@@ -14,11 +19,11 @@ The REST API to the example app is described below.
 
 `POST /customers`
 
-    curl -i -d '{"name":"Bill","age":30,"country":"AU", "items": ["Keyboard","Speaker"]}' localhost:4000/customers
+    curl -i -d '{"name":"Bill","age":30,"country":"MT", "items": ["Keyboard","Speaker"]}' localhost:4000/customers
 
 ### Response
 
-	HTTP/1.1 201 Created
+	HTTP/1.1 200 OK
 	Date: Wed, 21 Jul 2021 15:57:01 GMT
 	Content-Length: 0	
 
@@ -38,7 +43,7 @@ The REST API to the example app is described below.
 	Date: Wed, 21 Jul 2021 15:58:38 GMT
 	Content-Length: 171
 
-	{"customers":[{"ID":1,"Name":"Moana","Age":26,"Country":"BG","Items":["Laptop","Speaker"]},{"ID":2,"Name":"Bill","Age":30,"Country":"AU","Items":["Keyboard","Speaker"]}]}
+	{"customers":[{"ID":1,"Name":"Moana","Age":26,"Country":"BG","Items":["Laptop","Speaker"]},{"ID":2,"Name":"Bill","Age":30,"Country":"MT","Items":["Keyboard","Speaker"]}]}
 	
 
 ## Get a specific Customer
@@ -56,4 +61,4 @@ The REST API to the example app is described below.
 	Date: Wed, 21 Jul 2021 15:59:43 GMT
 	Content-Length: 91
 
-	{"customers":{"ID":1,"Name":"Moana","Age":26,"Country":"BG","Items":["Laptop","Speaker"]}}
+	{"customers":{"ID":1,"Name":"Moana","Age":26,"Country":"MT","Items":["Laptop","Speaker"]}}

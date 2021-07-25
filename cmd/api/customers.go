@@ -3,11 +3,10 @@ package main
 import (
 	"net/http"
 
-	"sample.api.kasun.com/internal/data"
+	"sample.api.kasun.com/pkg/models"
 )
 
-var cust = map[int64]*data.Customer{}
-var nextCustId int64 = 0
+var cust = map[int64]*models.Customer{}
 
 // Create a customer
 func (app *application) createCustomerHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,18 +25,19 @@ func (app *application) createCustomerHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	nextCustId++
-	customer := &data.Customer{
-		ID:      nextCustId,
+	customer := &models.Customer{
 		Name:    input.Name,
 		Age:     input.Age,
 		Country: input.Country,
 		Items:   input.Items,
 	}
 
-	cust[nextCustId] = customer
+	_, dberr := app.customers.Insert(customer.Name, int(customer.Age), customer.Country, customer.Items)
 
-	w.WriteHeader(http.StatusCreated)
+	if dberr != nil {
+		app.logger.Println(dberr)
+	}
+
 }
 
 // Get customer details for a given ID
@@ -48,7 +48,18 @@ func (app *application) getCustomerByIDHandler(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, cust[id], nil)
+	customers, dberr := app.customers.GetCustomerById(id)
+
+	if dberr != nil {
+		app.logger.Println(dberr)
+	}
+
+	if customers == nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, customers, nil)
 	if err != nil {
 		app.logger.Println(err)
 		http.Error(w, "The server encountered a problem and could not process your request",
@@ -59,9 +70,15 @@ func (app *application) getCustomerByIDHandler(w http.ResponseWriter, r *http.Re
 // Get the list of all the customers
 func (app *application) getCustomersHandler(w http.ResponseWriter, r *http.Request) {
 
-	customers := []data.Customer{}
+	customers := []models.Customer{}
 	for _, customer := range cust {
 		customers = append(customers, *customer)
+	}
+
+	customers, dberr := app.customers.GetCustomers()
+
+	if dberr != nil {
+		app.logger.Println(dberr)
 	}
 
 	err := app.writeJSON(w, http.StatusOK, customers, nil)

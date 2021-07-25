@@ -1,4 +1,4 @@
-package data
+package models
 
 // Customer defines a struct to hold the customer details
 type Customer struct {
