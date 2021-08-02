@@ -7,12 +7,20 @@ This is a sample REST API implementation to manage customer details.
 
 The REST API to the example app is described below.
 
+
 # Setup
 
+## Setting up database
  1. Create a MYSQL database and execute `dbscripts/mysql.sql`
  2. Create a .envrc file in $PROJECT_HOME directory and configure 'CUSTOMER_API_DB_DSN' with database details 
 	
 		export CUSTOMER_API_DB_DSN=root:root@tcp(127.0.0.1:3306)/go_customer
+
+## Setting up streams in Apache Kafka
+
+1. Setup Apache Kafka cluster along with ksqlDB
+2. Create `user_transactions` and `possible_user_anomalies` streams as described in `streams/kafka.sql`
+3. Send transaction events as descibed in `streams/kafka.sql` 
 
 ## Create a new Customer
 
