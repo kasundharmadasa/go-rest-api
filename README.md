@@ -19,7 +19,7 @@ The REST API to the example app is described below.
 ## Setting up streams in Apache Kafka
 
 1. Setup Apache Kafka cluster along with ksqlDB
-2. Create `user_transactions` and `possible_user_anomalies` streams as described in `streams/kafka.sql`
+2. Create `customer_transactions` and `possible_customer_anomalies` streams as described in `streams/kafka.sql`
 3. Send transaction events as descibed in `streams/kafka.sql` 
 
 ## Create a new Customer
