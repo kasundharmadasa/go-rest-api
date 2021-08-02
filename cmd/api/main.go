@@ -10,8 +10,9 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"sample.api.kasun.com/pkg/models"
-	"sample.api.kasun.com/pkg/models/mysql"
+	"sample.api.kasun.com/cmd/api/helpers"
+	"sample.api.kasun.com/cmd/api/repository/mysql"
+	"sample.api.kasun.com/cmd/api/service"
 )
 
 type config struct {
@@ -21,13 +22,9 @@ type config struct {
 }
 
 type application struct {
-	config    config
-	logger    *log.Logger
-	customers interface {
-		Insert(name string, age int, country string, items []string) (int, error)
-		GetCustomerById(id int64) (*models.Customer, error)
-		GetCustomers() ([]models.Customer, error)
-	}
+	config          config
+	logger          *log.Logger
+	customerService service.CustomerService
 }
 
 func main() {
@@ -49,10 +46,19 @@ func main() {
 
 	defer db.Close()
 
+	rp := &mysql.CustomerModel{DB: db}
+
+	cs := service.DefaultCustomerService{
+		Repository: rp,
+		Logger:     logger,
+		Helpers:    helpers.Helpers{},
+		Errors:     helpers.Errors{},
+	}
+
 	app := &application{
-		config:    cfg,
-		logger:    logger,
-		customers: &mysql.CustomerModel{DB: db},
+		config:          cfg,
+		logger:          logger,
+		customerService: cs,
 	}
 
 	srv := &http.Server{
@@ -63,19 +69,10 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
+	go app.consumeKafka()
+
 	logger.Printf("starting %s server on %s", cfg.env, srv.Addr)
 	err = srv.ListenAndServe()
 	logger.Fatal(err)
 
-}
-
-func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		return nil, err
-	}
-	if err = db.Ping(); err != nil {
-		return nil, err
-	}
-	return db, nil
 }

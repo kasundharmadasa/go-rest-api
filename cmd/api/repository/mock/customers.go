@@ -7,7 +7,7 @@ import (
 type CustomerModel struct {
 }
 
-func (m *CustomerModel) Insert(name string, age int, country string, items []string) (int, error) {
+func (m *CustomerModel) Insert(name string, age int, country string, items []string, status string) (int, error) {
 
 	return 0, nil
 }
@@ -40,4 +40,9 @@ func (m *CustomerModel) GetCustomers() ([]models.Customer, error) {
 	customers = append(customers, *customer)
 
 	return customers, nil
+}
+
+func (m *CustomerModel) UpdateCustomerStatus(id int, status string) (int, error) {
+
+	return 0, nil
 }

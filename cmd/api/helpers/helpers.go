@@ -1,4 +1,4 @@
-package main
+package helpers
 
 import (
 	"encoding/json"
@@ -10,10 +10,13 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+type Helpers struct {
+}
+
 type envelope map[string]interface{}
 
 // Read the ID from request params
-func (app *application) readIDParam(r *http.Request) (int64, error) {
+func (helpers *Helpers) ReadIDParam(r *http.Request) (int64, error) {
 	params := httprouter.ParamsFromContext(r.Context())
 	id, err := strconv.ParseInt(params.ByName("id"), 10, 64)
 	if err != nil || id < 1 {
@@ -23,7 +26,7 @@ func (app *application) readIDParam(r *http.Request) (int64, error) {
 }
 
 // Write JSON response
-func (app *application) writeJSON(w http.ResponseWriter, status int, data interface{}, headers http.Header) error {
+func (helpers *Helpers) WriteJSON(w http.ResponseWriter, status int, data interface{}, headers http.Header) error {
 	// Encode the data to JSON, returning the error if there was one.
 	js, err := json.Marshal(map[string]interface{}{"customers": data})
 	if err != nil {
@@ -43,7 +46,7 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data interf
 }
 
 // Read JSON request body
-func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
+func (helpers *Helpers) ReadJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {
 	// Use http.MaxBytesReader() to limit the size of the request body to 1MB.
 	maxBytes := 1_048_576
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))

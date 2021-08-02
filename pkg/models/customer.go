@@ -7,4 +7,5 @@ type Customer struct {
 	Age     int32
 	Country string
 	Items   []string
+	Status  string
 }

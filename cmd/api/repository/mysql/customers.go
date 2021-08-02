@@ -11,8 +11,9 @@ type CustomerModel struct {
 	DB *sql.DB
 }
 
-func (m *CustomerModel) Insert(name string, age int, country string, items []string) (int, error) {
+func (m *CustomerModel) Insert(name string, age int, country string, items []string, status string) (int, error) {
 
+	// todo: make these statements transactional
 	customerInsertStmt := `INSERT INTO CUSTOMERS (NAME, AGE, COUNTRY) VALUES(?, ?, ?)`
 
 	result, err := m.DB.Exec(customerInsertStmt, name, age, country)
@@ -32,6 +33,13 @@ func (m *CustomerModel) Insert(name string, age int, country string, items []str
 		if err != nil {
 			return 0, err
 		}
+	}
+
+	statusInsertStmt := `INSERT INTO CUSTOMER_STATUS (CUSTOMER_ID, STATUS) VALUES(?, ?)`
+
+	_, err = m.DB.Exec(statusInsertStmt, id, status)
+	if err != nil {
+		return 0, err
 	}
 
 	return 0, nil
@@ -133,4 +141,16 @@ func (m *CustomerModel) GetCustomers() ([]models.Customer, error) {
 		}
 	}
 	return customers, nil
+}
+
+func (m *CustomerModel) UpdateCustomerStatus(id int, status string) (int, error) {
+
+	customerInsertStmt := `UPDATE CUSTOMER_STATUS SET STATUS = ? WHERE CUSTOMER_ID = ?`
+
+	_, err := m.DB.Exec(customerInsertStmt, status, id)
+	if err != nil {
+		return 0, err
+	}
+
+	return 0, nil
 }

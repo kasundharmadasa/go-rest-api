@@ -9,15 +9,25 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"sample.api.kasun.com/pkg/models/mock"
+	"sample.api.kasun.com/cmd/api/helpers"
+	"sample.api.kasun.com/cmd/api/repository/mock"
+	"sample.api.kasun.com/cmd/api/service"
 )
 
 func TestGetCustomers(t *testing.T) {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+	rp := &mock.CustomerModel{}
+
+	cs := service.DefaultCustomerService{
+		Repository: rp,
+		Logger:     logger,
+		Helpers:    helpers.Helpers{},
+		Errors:     helpers.Errors{},
+	}
 	app := &application{
-		logger:    logger,
-		customers: &mock.CustomerModel{},
+		logger:          logger,
+		customerService: cs,
 	}
 
 	req, err := http.NewRequest("GET", "/customers", nil)
@@ -25,7 +35,7 @@ func TestGetCustomers(t *testing.T) {
 		t.Fatal(err)
 	}
 	reqRecorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(app.getCustomersHandler)
+	handler := http.HandlerFunc(app.customerService.GetCustomers)
 	handler.ServeHTTP(reqRecorder, req)
 
 	// Test whether the response is OK
@@ -47,9 +57,18 @@ func TestGetCustomers(t *testing.T) {
 func TestGetCustomerById(t *testing.T) {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+
+	rp := &mock.CustomerModel{}
+
+	cs := DefaultCustomerService{
+		repository: rp,
+		logger:     logger,
+		helpers:    Helpers{},
+		errors:     Errors{},
+	}
 	app := &application{
-		logger:    logger,
-		customers: &mock.CustomerModel{},
+		logger:          logger,
+		customerService: cs,
 	}
 
 	req, err := http.NewRequest("GET", "/customers/1", nil)
@@ -57,7 +76,7 @@ func TestGetCustomerById(t *testing.T) {
 		t.Fatal(err)
 	}
 	reqRecorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(app.getCustomersHandler)
+	handler := http.HandlerFunc(app.customerService.GetCustomers)
 	handler.ServeHTTP(reqRecorder, req)
 
 	// Test whether the response is OK
@@ -80,8 +99,7 @@ func TestCreateCustomer(t *testing.T) {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 	app := &application{
-		logger:    logger,
-		customers: &mock.CustomerModel{},
+		logger: logger,
 	}
 
 	req, err := http.NewRequest("POST", "/customers", nil)
@@ -89,7 +107,7 @@ func TestCreateCustomer(t *testing.T) {
 		t.Fatal(err)
 	}
 	reqRecorder := httptest.NewRecorder()
-	handler := http.HandlerFunc(app.getCustomersHandler)
+	handler := http.HandlerFunc(app.customerService.GetCustomers)
 	handler.ServeHTTP(reqRecorder, req)
 
 	// Test whether the response is OK
