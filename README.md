@@ -55,7 +55,6 @@ The REST API to the example app is described below.
 	{"customers":[{"ID":1,"Name":"Moana","Age":26,"Country":"BG","Items":["Laptop","Speaker"]},{"ID":2,"Name":"Bill","Age":30,"Country":"MT","Items":["Keyboard","Speaker"]}]}
 	
 
-
 ## Get a specific Customer
 
 ### Request
