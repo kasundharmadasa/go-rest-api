@@ -9,7 +9,6 @@ The REST API to the example app is described below.
 
 
 # Setup
-
 ## Setting up database
  1. Create a MYSQL database and execute `dbscripts/mysql.sql`
  2. Create a .envrc file in $PROJECT_HOME directory and configure 'CUSTOMER_API_DB_DSN' with database details 
