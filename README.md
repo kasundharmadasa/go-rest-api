@@ -5,7 +5,7 @@ This is a sample REST API implementation to manage customer details.
 
 # REST API
 
-The REST API to the example app is described below.
+The REST API for the example app is described below.
 
 
 # Setup
